@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../prisma/generated"
+  runtime  = "bun"
 }
 
 datasource db {
@@ -8,27 +9,25 @@ datasource db {
 }
 
 model User {
-  id            String   @id
+  id            String    @id
   name          String
-  email         String   @unique
-  emailVerified Boolean  @default(false)
+  email         String
+  emailVerified Boolean   @default(false)
   image         String?
-  role          String   @default("STUDENT")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          String?   @default("STUDENT")
   sessions      Session[]
   accounts      Account[]
-  uploads       Handbook[]     @relation("HandbookUploader")
-  conversations Conversation[]
 
+  @@unique([email])
   @@map("user")
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String   @unique
+  token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -36,6 +35,7 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -45,6 +45,7 @@ model Account {
   accountId             String
   providerId            String
   userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -54,7 +55,6 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
@@ -70,81 +70,4 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
-}
-
-model Course {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  title       String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  handbooks Handbook[]
-}
-
-enum HandbookStatus {
-  PENDING
-  PROCESSING
-  READY
-  FAILED
-}
-
-model Handbook {
-  id           String         @id @default(cuid())
-  courseId     String
-  uploadedById String
-  title        String
-  filename     String
-  storageKey   String         @unique
-  version      Int
-  status       HandbookStatus @default(PENDING)
-  pageCount    Int?
-  sizeBytes    Int
-  errorMessage String?
-  publishedAt  DateTime?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-
-  course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  uploadedBy    User           @relation("HandbookUploader", fields: [uploadedById], references: [id])
-  conversations Conversation[]
-
-  @@unique([courseId, version])
-  @@index([courseId, status])
-  @@index([uploadedById])
-}
-
-model Conversation {
-  id         String   @id @default(cuid())
-  userId     String
-  handbookId String
-  title      String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  handbook Handbook   @relation(fields: [handbookId], references: [id])
-  messages Message[]
-
-  @@index([userId, updatedAt])
-  @@index([handbookId])
-}
-
-enum MessageRole {
-  USER
-  ASSISTANT
-}
-
-model Message {
-  id             String      @id @default(cuid())
-  conversationId String
-  role           MessageRole
-  content        String      @db.Text
-  citations      Json?
-  createdAt      DateTime    @default(now())
-
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-
-  @@index([conversationId, createdAt])
 }
