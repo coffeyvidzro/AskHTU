@@ -11,9 +11,8 @@
     "format": "biome format --write",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.102",

@@ -5,7 +5,6 @@ import { prisma } from "@/lib/prisma";
 
 export const roles = {
   student: "STUDENT",
-  lecturer: "LECTURER",
   admin: "ADMIN",
 } as const;
 

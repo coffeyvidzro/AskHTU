@@ -22,9 +22,6 @@ export function WorkspaceHeader({
           <nav aria-label="Workspace" className="flex items-center gap-5 text-sm font-medium text-[#5d776a]">
             <Link href="/dashboard" className="hover:text-[#174d42]">Dashboard</Link>
             <Link href="/courses" className="hover:text-[#174d42]">Courses</Link>
-            {(role === roles.lecturer || role === roles.admin) && (
-              <Link href="/lecturer" className="hover:text-[#174d42]">Lecturer</Link>
-            )}
             {role === roles.admin && (
               <Link href="/admin" className="hover:text-[#174d42]">Admin</Link>
             )}

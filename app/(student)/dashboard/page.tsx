@@ -19,7 +19,7 @@ export default async function DashboardPage() {
         Welcome, {user.name}.
       </h1>
       <p className="mt-4 max-w-2xl text-base leading-8 text-[#60786d]">
-        Your courses and study materials will appear here as lecturers publish handbooks.
+        Your courses and study materials will appear here as administrators publish handbooks.
       </p>
 
       <div className="mt-10 grid gap-5 sm:grid-cols-2">

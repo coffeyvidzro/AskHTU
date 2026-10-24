@@ -17,11 +17,10 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  sessions       Session[]
-  accounts       Account[]
-  lecturing      CourseLecturer[]
-  uploads        Handbook[]       @relation("HandbookUploader")
-  conversations  Conversation[]
+  sessions      Session[]
+  accounts      Account[]
+  uploads       Handbook[]     @relation("HandbookUploader")
+  conversations Conversation[]
 
   @@map("user")
 }
@@ -81,21 +80,7 @@ model Course {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  lecturers CourseLecturer[]
   handbooks Handbook[]
-}
-
-model CourseLecturer {
-  id        String   @id @default(cuid())
-  courseId  String
-  userId    String
-  createdAt DateTime @default(now())
-
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([courseId, userId])
-  @@index([userId])
 }
 
 enum HandbookStatus {
