@@ -102,7 +102,7 @@ model Handbook {
   title     String // e.g., "CSC 103 Lab Manual & Lecture Notes"
   fileUrl   String? // External storage URL
   vectorIds String[] // Upstash Vector chunk IDs
-  isActive  Boolean  @default(true)
+  isActive  Boolean  @default(false)
   courseId  String // Foreign key linking back to Course
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
