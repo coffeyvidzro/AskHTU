@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
+import "./env";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  serverExternalPackages: [
+    "@arcjet/sensitive-info-rampart",
+    "@huggingface/transformers",
+    "onnxruntime-node",
+  ],
 };
 
 export default nextConfig;

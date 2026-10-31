@@ -17,6 +17,27 @@ export const auth = betterAuth({
         defaultValue: "STUDENT",
         input: false,
       },
+      studentId: {
+        type: "string",
+        required: false,
+        unique: true,
+        input: true,
+      },
+      department: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      programme: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      yearOfStudy: {
+        type: "number",
+        required: false,
+        input: true,
+      },
     },
   },
   plugins: [

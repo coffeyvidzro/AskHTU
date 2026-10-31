@@ -1,17 +1,23 @@
-import { Client } from "@upstash/qstash";
+import { Client, Receiver } from "@upstash/qstash";
 import { Redis } from "@upstash/redis";
 import { Index } from "@upstash/vector";
+import { env } from "@/env";
 
 export const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_URL,
-  token: process.env.UPSTASH_REDIS_TOKEN,
+  url: env.UPSTASH_REDIS_URL,
+  token: env.UPSTASH_REDIS_TOKEN,
 });
 
 export const qstash = new Client({
-  token: process.env.UPSTASH_QSTASH_TOKEN,
+  token: env.UPSTASH_QSTASH_TOKEN,
 });
 
 export const vector = new Index({
-  url: process.env.UPSTASH_VECTOR_URL,
-  token: process.env.UPSTASH_VECTOR_TOKEN,
+  url: env.UPSTASH_VECTOR_URL,
+  token: env.UPSTASH_VECTOR_TOKEN,
+});
+
+export const receiver = new Receiver({
+  currentSigningKey: env.QSTASH_CURRENT_SIGNING_KEY,
+  nextSigningKey: env.QSTASH_NEXT_SIGNING_KEY,
 });

@@ -8,17 +8,28 @@ datasource db {
   provider = "postgresql"
 }
 
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
 model User {
-  id            String    @id
+  id            String         @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean        @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          String?   @default("STUDENT")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  role          String?        @default("STUDENT")
+  studentId     String?        @unique
+  department    String?
+  programme     String?
+  yearOfStudy   Int?
   sessions      Session[]
   accounts      Account[]
+  conversations Conversation[]
 
   @@unique([email])
   @@map("user")
@@ -70,4 +81,59 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Course {
+  id         String     @id @default(cuid())
+  code       String     @unique // e.g., "CSC 103"
+  title      String // e.g., "Probability and statistics"
+  department String // e.g., "Computer Science"
+  semester   Int // 1 or 2
+  level      Int // 100, 200, 300, 400
+  handbooks  Handbook[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@map("course")
+}
+
+model Handbook {
+  id        String   @id @default(cuid())
+  title     String // e.g., "CSC 103 Lab Manual & Lecture Notes"
+  fileUrl   String? // External storage URL
+  vectorIds String[] // Upstash Vector chunk IDs
+  isActive  Boolean  @default(true)
+  courseId  String // Foreign key linking back to Course
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+  @@map("handbook")
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  title     String    @default("New Conversation")
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("conversation")
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           MessageRole
+  content        String       @db.Text
+  sources        Json?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@map("message")
 }

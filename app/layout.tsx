@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { geistMono, geistSans, spaceGrotesk } from "@/utils/font";
 import "./globals.css";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
@@ -13,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="en-GH"
       className={cn(
         "h-full antialiased",
         geistSans.variable,
@@ -22,6 +25,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <body className="flex min-h-full flex-col bg-[#f7f9f7] text-[#19322e]">
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
