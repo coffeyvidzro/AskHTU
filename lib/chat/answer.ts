@@ -6,6 +6,7 @@ const CHAT_MODEL = "gpt-4o-mini";
 export async function generateHandbookAnswer(
   question: string,
   sources: HandbookSource[],
+  history: { role: "USER" | "ASSISTANT"; content: string }[] = [],
 ): Promise<string> {
   const context = sources
     .map(
@@ -30,6 +31,10 @@ export async function generateHandbookAnswer(
           "Use clear, student-friendly language. Do not claim to have read content that is not in the excerpts.",
         ].join(" "),
       },
+      ...history.slice(-8).map((item) => ({
+        role: item.role === "USER" ? ("user" as const) : ("assistant" as const),
+        content: item.content,
+      })),
       {
         role: "user",
         content: `Handbook excerpts:\n\n${context}\n\nStudent question: ${question}`,
