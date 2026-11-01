@@ -78,12 +78,12 @@ export async function indexHandbook(handbook: HandbookSource): Promise<string[]>
     throw new Error(`Unable to download handbook PDF (HTTP ${response.status}).`);
   }
 
-  const contentType = response.headers.get("content-type") ?? "";
-  if (!contentType.toLowerCase().includes("pdf")) {
-    throw new Error("The uploaded handbook is not served as a PDF.");
+  const buffer = await readPdfResponse(response);
+  const header = new TextDecoder().decode(buffer.slice(0, 1_024));
+  if (!header.includes("%PDF-")) {
+    throw new Error("The uploaded file is not a valid PDF.");
   }
 
-  const buffer = await readPdfResponse(response);
   const pages = await extractPdfPages(buffer);
   const chunks = chunkHandbookPages(handbook.id, pages);
 
