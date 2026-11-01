@@ -28,17 +28,21 @@ async function readPdfResponse(response: Response): Promise<ArrayBuffer> {
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
 
-    totalBytes += value.byteLength;
-    if (totalBytes > MAX_PDF_BYTES) {
-      await reader.cancel();
-      throw new Error("The handbook PDF exceeds the 16 MB upload limit.");
+      totalBytes += value.byteLength;
+      if (totalBytes > MAX_PDF_BYTES) {
+        await reader.cancel();
+        throw new Error("The handbook PDF exceeds the 16 MB upload limit.");
+      }
+
+      chunks.push(value);
     }
-
-    chunks.push(value);
+  } finally {
+    reader.releaseLock();
   }
 
   const buffer = new Uint8Array(totalBytes);
