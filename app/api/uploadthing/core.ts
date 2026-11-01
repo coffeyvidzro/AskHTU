@@ -5,6 +5,7 @@ import { env } from "@/env";
 import { auth } from "@/lib/auth/server";
 import { prisma } from "@/lib/prisma";
 import { qstash } from "@/lib/upstash";
+import { uploadArcjet } from "@/lib/arcjet";
 
 const f = createUploadthing();
 
@@ -29,6 +30,22 @@ export const ourFileRouter = {
 
       if (session.user.role !== "ADMIN") {
         throw new UploadThingError("Only administrators can upload handbooks.");
+      }
+
+      const decision = await uploadArcjet.protect(req, {
+        userId: session.user.id,
+      });
+
+      if (decision.isDenied()) {
+        if (decision.reason.isRateLimit()) {
+          throw new UploadThingError("Upload limit reached. Try again later.");
+        }
+
+        throw new UploadThingError("This upload request was blocked.");
+      }
+
+      if (decision.isErrored()) {
+        console.error("Arcjet upload protection failed:", decision.reason.message);
       }
 
       const course = await prisma.course.findUnique({
