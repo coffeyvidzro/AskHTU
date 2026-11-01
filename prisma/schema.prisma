@@ -137,6 +137,7 @@ model Conversation {
   updatedAt DateTime  @updatedAt
 
   @@index([userId])
+  @@index([handbookId, updatedAt])
   @@map("conversation")
 }
 
