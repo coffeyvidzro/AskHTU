@@ -40,7 +40,6 @@ export async function processHandbook(handbookId: string, courseId: string) {
       return;
     }
 
-    // Keep the QStash delivery retryable if another attempt is still running.
     if (handbook.ingestionStatus === "PROCESSING") {
       throw new Error("Handbook ingestion is already running.");
     }
@@ -48,61 +47,32 @@ export async function processHandbook(handbookId: string, courseId: string) {
     throw new Error("The handbook is not eligible for ingestion.");
   }
 
-  let indexedIds: string[] = [];
+  const handbook = await prisma.handbook.findUnique({
+    where: { id: handbookId },
+    select: { id: true, courseId: true, fileUrl: true, vectorIds: true },
+  });
 
-  try {
-    const handbook = await prisma.handbook.findUnique({
-      where: { id: handbookId },
-      select: { id: true, courseId: true, fileUrl: true, vectorIds: true },
-    });
-
-    if (!handbook || handbook.courseId !== courseId) {
-      throw new Error("The handbook or its course could not be found.");
-    }
-
-    indexedIds = await indexHandbook(handbook);
-
-    const obsoleteIds = handbook.vectorIds.filter(
-      (id) => !indexedIds.includes(id),
-    );
-
-    if (obsoleteIds.length > 0) {
-      await vector.delete(obsoleteIds);
-    }
-
-    await prisma.handbook.update({
-      where: { id: handbookId },
-      data: {
-        vectorIds: indexedIds,
-        ingestionStatus: "READY",
-        ingestionError: null,
-        processedAt: new Date(),
-        isActive: true,
-      },
-    });
-  } catch (error) {
-    // Deterministic vector IDs make retrying safe. Remove partial writes before
-    // allowing the next delivery to retry the same handbook.
-    if (indexedIds.length > 0) {
-      try {
-        await vector.delete(indexedIds);
-      } catch {
-        // Keep the original ingestion failure as the reported error.
-      }
-    }
-
-    const message =
-      error instanceof Error ? error.message : "Unknown handbook ingestion error.";
-
-    await prisma.handbook.update({
-      where: { id: handbookId },
-      data: {
-        ingestionStatus: "FAILED",
-        ingestionError: message.slice(0, 1_000),
-        isActive: false,
-      },
-    });
-
-    throw error;
+  if (!handbook || handbook.courseId !== courseId) {
+    throw new Error("The handbook or its course could not be found.");
   }
+
+  const indexedIds = await indexHandbook(handbook);
+  const obsoleteIds = handbook.vectorIds.filter(
+    (id) => !indexedIds.includes(id),
+  );
+
+  if (obsoleteIds.length > 0) {
+    await vector.delete(obsoleteIds);
+  }
+
+  await prisma.handbook.update({
+    where: { id: handbookId },
+    data: {
+      vectorIds: indexedIds,
+      ingestionStatus: "READY",
+      ingestionError: null,
+      processedAt: new Date(),
+      isActive: true,
+    },
+  });
 }
