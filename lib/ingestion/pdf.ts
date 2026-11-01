@@ -25,7 +25,7 @@ export async function extractPdfPages(buffer: ArrayBuffer): Promise<ExtractedPag
     const pages = result.pages
       .map((page) => ({
         pageNumber: page.num,
-        text: page.text.replace(/\\s+/g, " ").trim(),
+        text: page.text.replace(/\s+/g, " ").trim(),
       }))
       .filter((page) => page.text.length > 0);
 
