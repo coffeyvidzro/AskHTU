@@ -14,8 +14,8 @@ export const ourFileRouter = {
   })
     .input(
       z.object({
-        courseId: z.string(),
-        title: z.string(),
+        courseId: z.string().trim().min(1),
+        title: z.string().trim().min(1).max(200),
       }),
     )
     .middleware(async ({ req, input }) => {
@@ -27,10 +27,23 @@ export const ourFileRouter = {
         throw new UploadThingError("You must be logged in to upload files.");
       }
 
+      if (session.user.role !== "ADMIN") {
+        throw new UploadThingError("Only administrators can upload handbooks.");
+      }
+
+      const course = await prisma.course.findUnique({
+        where: { id: input.courseId },
+        select: { id: true },
+      });
+
+      if (!course) {
+        throw new UploadThingError("The selected course does not exist.");
+      }
+
       const handbook = await prisma.handbook.create({
         data: {
           title: input.title,
-          courseId: input.courseId,
+          courseId: course.id,
           isActive: false,
         },
       });
@@ -38,7 +51,7 @@ export const ourFileRouter = {
       return {
         userId: session.user.id,
         handbookId: handbook.id,
-        courseId: input.courseId,
+        courseId: course.id,
       };
     })
     .onUploadComplete(async ({ metadata, file }) => {
@@ -48,7 +61,7 @@ export const ourFileRouter = {
       });
 
       await qstash.publishJSON({
-        url: `${env.NEXT_PUBLIC_BASE_URL}/api/ingest/qstash`,
+        url: new URL("/api/ingest/qstash", env.NEXT_PUBLIC_BASE_URL).toString(),
         body: {
           handbookId: metadata.handbookId,
           courseId: metadata.courseId,

@@ -1,8 +1,13 @@
-import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 import { receiver } from "@/lib/upstash";
 
+const ingestionPayloadSchema = z.object({
+  handbookId: z.string().trim().min(1),
+  courseId: z.string().trim().min(1),
+  fileUrl: z.url(),
+});
+
 export async function POST(req: Request) {
-  // 1. Verify QStash Signature (Security Check)
   const signature = req.headers.get("Upstash-Signature");
 
   if (!signature) {
@@ -11,37 +16,35 @@ export async function POST(req: Request) {
 
   const body = await req.text();
 
-  const isValid = await receiver.verify({
-    signature,
-    body,
-  });
+  let isValid = false;
+
+  try {
+    isValid = await receiver.verify({ signature, body });
+  } catch {
+    return new Response("Invalid signature", { status: 401 });
+  }
 
   if (!isValid) {
     return new Response("Invalid signature", { status: 401 });
   }
 
-  // 2. Parse the payload that was sent from Uploadthing
-  const { handbookId, courseId, fileUrl } = JSON.parse(body);
+  let payload: unknown;
 
-  console.log(
-    `Starting background processing for handbook: ${handbookId}, ${courseId}, ${fileUrl}`,
-  );
+  try {
+    payload = JSON.parse(body);
+  } catch {
+    return new Response("Invalid JSON payload", { status: 400 });
+  }
 
-  // ==========================================
-  // TODO 1: Download the PDF using fileUrl
-  // TODO 2: Extract text using your preferred library
-  // TODO 3: Generate OpenAI embeddings
-  // TODO 4: Upsert chunks to Upstash Vector
-  // ==========================================
+  const parsedPayload = ingestionPayloadSchema.safeParse(payload);
 
-  // 3. Mark the handbook as fully processed and active in the database
-  await prisma.handbook.update({
-    where: { id: handbookId },
-    data: {
-      isActive: true,
-      // vectorIds: [] // You would pass your generated vector IDs here
-    },
+  if (!parsedPayload.success) {
+    return new Response("Invalid ingestion payload", { status: 400 });
+  }
+
+  // The ingestion worker is not implemented yet. Keep uploaded handbooks
+  // inactive until extraction, indexing, and verification have completed.
+  return new Response("Handbook ingestion is not implemented yet.", {
+    status: 501,
   });
-
-  return new Response("Processing complete", { status: 200 });
 }
