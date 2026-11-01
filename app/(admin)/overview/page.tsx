@@ -1,4 +1,4 @@
-export default function Home() {
+export default function OverviewPage() {
   return (
     <div>
       <h1>Overview</h1>
