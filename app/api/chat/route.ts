@@ -17,9 +17,26 @@ export async function GET(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const conversationId = new URL(req.url).searchParams.get("conversationId");
+  const searchParams = new URL(req.url).searchParams;
+  const conversationId = searchParams.get("conversationId");
   if (!conversationId) {
-    return Response.json({ error: "conversationId is required." }, { status: 400 });
+    const conversations = await prisma.conversation.findMany({
+      where: {
+        userId: session.user.id,
+        ...(searchParams.get("handbookId")
+          ? { handbookId: searchParams.get("handbookId")! }
+          : {}),
+      },
+      orderBy: { updatedAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        handbook: { select: { id: true, title: true } },
+        updatedAt: true,
+      },
+    });
+
+    return Response.json(conversations);
   }
 
   const conversation = await prisma.conversation.findFirst({
@@ -80,7 +97,14 @@ export async function POST(req: Request) {
   const conversation = conversationId
     ? await prisma.conversation.findFirst({
         where: { id: conversationId, userId: session.user.id, handbookId },
-        select: { id: true },
+        select: {
+          id: true,
+          messages: {
+            take: 8,
+            orderBy: { createdAt: "desc" },
+            select: { role: true, content: true },
+          },
+        },
       })
     : null;
 
@@ -88,9 +112,17 @@ export async function POST(req: Request) {
     return Response.json({ error: "Conversation not found." }, { status: 404 });
   }
 
-  const sources = await retrieveHandbookContext(handbook.id, message);
+  const history = (conversation?.messages ?? [])
+    .filter((item) => item.role !== "SYSTEM")
+    .reverse()
+    .map((item) => ({
+      role: item.role === "USER" ? ("USER" as const) : ("ASSISTANT" as const),
+      content: item.content,
+    }));
+
+  const sources = await retrieveHandbookContext(handbook.id, message, history);
   const answer = sources.length
-    ? await generateHandbookAnswer(message, sources)
+    ? await generateHandbookAnswer(message, sources, history)
     : "I couldn't find relevant information for that question in the selected handbook. Try rephrasing your question or checking another handbook.";
 
   const sourcePages = [
