@@ -118,6 +118,8 @@ model Handbook {
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
 
+  conversations Conversation[]
+
   @@index([courseId])
   @@index([ingestionStatus, updatedAt])
   @@map("handbook")
@@ -126,13 +128,16 @@ model Handbook {
 model Conversation {
   id        String    @id @default(cuid())
   title     String    @default("New Conversation")
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages  Message[]
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  handbookId String?
+  handbook   Handbook? @relation(fields: [handbookId], references: [id], onDelete: SetNull)
+  messages   Message[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   @@index([userId])
+  @@index([handbookId, updatedAt])
   @@map("conversation")
 }
 

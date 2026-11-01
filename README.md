@@ -52,4 +52,4 @@ The `.env.example` file documents all required server credentials, including QSt
 
 ## Current implementation status
 
-PDF text extraction, chunking, embedding, and vector indexing are implemented. Handbook-scoped retrieval, answer generation grounded in retrieved chunks, PDF citations in chat, and persistent conversation handling are separate follow-up work.
+PDF text extraction, chunking, embedding, and vector indexing are implemented. The chat API retrieves only from the selected active handbook, generates answers from retrieved excerpts, includes original PDF page references, and persists handbook-scoped conversations and message history.
