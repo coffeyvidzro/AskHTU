@@ -1,4 +1,3 @@
-import { Prisma } from "@/prisma/generated/client";
 import { prisma } from "@/lib/prisma";
 import { vector } from "@/lib/upstash";
 import { indexHandbook } from "./process";
@@ -103,8 +102,6 @@ export async function processHandbook(handbookId: string, courseId: string) {
       },
     });
 
-    throw error instanceof Prisma.PrismaClientKnownRequestError
-      ? new Error("Unable to update handbook ingestion state.")
-      : error;
+    throw error;
   }
 }
