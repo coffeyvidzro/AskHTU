@@ -28,21 +28,17 @@ async function readPdfResponse(response: Response): Promise<ArrayBuffer> {
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
 
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
 
-      totalBytes += value.byteLength;
-      if (totalBytes > MAX_PDF_BYTES) {
-        await reader.cancel();
-        throw new Error("The handbook PDF exceeds the 16 MB upload limit.");
-      }
-
-      chunks.push(value);
+    totalBytes += value.byteLength;
+    if (totalBytes > MAX_PDF_BYTES) {
+      await reader.cancel();
+      throw new Error("The handbook PDF exceeds the 16 MB upload limit.");
     }
-  } finally {
-    reader.releaseLock();
+
+    chunks.push(value);
   }
 
   const buffer = new Uint8Array(totalBytes);
@@ -91,60 +87,49 @@ export async function indexHandbook(handbook: HandbookSource): Promise<string[]>
 
   const vectorIds: string[] = [];
 
-  try {
+  for (
+    let offset = 0;
+    offset < chunks.length;
+    offset += EMBEDDING_BATCH_SIZE
+  ) {
+    const batch = chunks.slice(offset, offset + EMBEDDING_BATCH_SIZE);
+    const embeddings = await openai.embeddings.create({
+      model: EMBEDDING_MODEL,
+      input: batch.map((chunk) => chunk.text),
+    });
+
+    const records = batch.map((chunk, index) => {
+      const embedding = embeddings.data.find((item) => item.index === index);
+      if (!embedding) {
+        throw new Error("OpenAI returned an incomplete embedding batch.");
+      }
+
+      return {
+        id: chunk.id,
+        vector: embedding.embedding,
+        metadata: {
+          handbookId: handbook.id,
+          courseId: handbook.courseId,
+          pageNumber: chunk.pageNumber,
+          chunkIndex: chunk.chunkIndex,
+          text: chunk.text,
+        },
+      };
+    });
+
     for (
-      let offset = 0;
-      offset < chunks.length;
-      offset += EMBEDDING_BATCH_SIZE
+      let vectorOffset = 0;
+      vectorOffset < records.length;
+      vectorOffset += VECTOR_BATCH_SIZE
     ) {
-      const batch = chunks.slice(offset, offset + EMBEDDING_BATCH_SIZE);
-      const embeddings = await openai.embeddings.create({
-        model: EMBEDDING_MODEL,
-        input: batch.map((chunk) => chunk.text),
-      });
-
-      const records = batch.map((chunk, index) => {
-        const embedding = embeddings.data.find((item) => item.index === index);
-        if (!embedding) {
-          throw new Error("OpenAI returned an incomplete embedding batch.");
-        }
-
-        return {
-          id: chunk.id,
-          vector: embedding.embedding,
-          metadata: {
-            handbookId: handbook.id,
-            courseId: handbook.courseId,
-            pageNumber: chunk.pageNumber,
-            chunkIndex: chunk.chunkIndex,
-            text: chunk.text,
-          },
-        };
-      });
-
-      for (
-        let vectorOffset = 0;
-        vectorOffset < records.length;
-        vectorOffset += VECTOR_BATCH_SIZE
-      ) {
-        const vectorBatch = records.slice(
-          vectorOffset,
-          vectorOffset + VECTOR_BATCH_SIZE,
-        );
-        await vector.upsert(vectorBatch);
-        vectorIds.push(...vectorBatch.map((record) => record.id));
-      }
+      const vectorBatch = records.slice(
+        vectorOffset,
+        vectorOffset + VECTOR_BATCH_SIZE,
+      );
+      await vector.upsert(vectorBatch);
+      vectorIds.push(...vectorBatch.map((record) => record.id));
     }
-
-    return vectorIds;
-  } catch (error) {
-    if (vectorIds.length > 0) {
-      try {
-        await vector.delete(vectorIds);
-      } catch {
-        // Preserve the original processing error.
-      }
-    }
-    throw error;
   }
+
+  return vectorIds;
 }
