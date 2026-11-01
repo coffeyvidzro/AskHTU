@@ -162,6 +162,11 @@ export async function POST(req: Request) {
       ],
     });
 
+    await tx.conversation.update({
+      where: { id: currentConversation.id },
+      data: { updatedAt: new Date() },
+    });
+
     return currentConversation;
   });
 
