@@ -14,23 +14,27 @@ export async function extractPdfPages(buffer: ArrayBuffer): Promise<ExtractedPag
   }
 
   const parser = new PDFParse({ data: new Uint8Array(buffer) });
-  const result = await parser.getText();
-  await parser.destroy();
 
-  if (result.total > MAX_PDF_PAGES) {
-    throw new Error(`The PDF exceeds the ${MAX_PDF_PAGES}-page limit.`);
+  try {
+    const result = await parser.getText();
+
+    if (result.total > MAX_PDF_PAGES) {
+      throw new Error(`The PDF exceeds the ${MAX_PDF_PAGES}-page limit.`);
+    }
+
+    const pages = result.pages
+      .map((page) => ({
+        pageNumber: page.num,
+        text: page.text.replace(/\s+/g, " ").trim(),
+      }))
+      .filter((page) => page.text.length > 0);
+
+    if (pages.length === 0) {
+      throw new Error("No selectable text was found in this PDF.");
+    }
+
+    return pages;
+  } finally {
+    await parser.destroy();
   }
-
-  const pages = result.pages
-    .map((page) => ({
-      pageNumber: page.num,
-      text: page.text.replace(/\s+/g, " ").trim(),
-    }))
-    .filter((page) => page.text.length > 0);
-
-  if (pages.length === 0) {
-    throw new Error("No selectable text was found in this PDF.");
-  }
-
-  return pages;
 }
