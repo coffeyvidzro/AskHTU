@@ -36,12 +36,13 @@ export async function processHandbook(handbookId: string, courseId: string) {
       throw new Error("The handbook or its course could not be found.");
     }
 
-    // A completed or currently running delivery is an idempotent no-op.
-    if (
-      handbook.ingestionStatus === "READY" ||
-      handbook.ingestionStatus === "PROCESSING"
-    ) {
+    if (handbook.ingestionStatus === "READY") {
       return;
+    }
+
+    // Keep the QStash delivery retryable if another attempt is still running.
+    if (handbook.ingestionStatus === "PROCESSING") {
+      throw new Error("Handbook ingestion is already running.");
     }
 
     throw new Error("The handbook is not eligible for ingestion.");
