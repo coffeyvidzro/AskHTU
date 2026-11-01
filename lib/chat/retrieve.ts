@@ -13,10 +13,11 @@ export type HandbookSource = {
 export async function retrieveHandbookContext(
   handbookId: string,
   question: string,
+  history: { role: "USER" | "ASSISTANT"; content: string }[] = [],
 ): Promise<HandbookSource[]> {
   const embedding = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
-    input: question,
+    input: [...history.slice(-6).map((item) => item.content), question].join("\\n"),
   });
 
   const [query] = embedding.data;
