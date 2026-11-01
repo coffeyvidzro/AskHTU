@@ -1,4 +1,4 @@
-export default function Home() {
+export default function HandbookDetailsPage() {
   return (
     <div>
       <h1>Handbook Details</h1>
