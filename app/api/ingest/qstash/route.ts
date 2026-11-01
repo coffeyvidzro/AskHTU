@@ -1,11 +1,14 @@
 import { z } from "zod";
+import { processHandbook } from "@/lib/ingestion/worker";
 import { receiver } from "@/lib/upstash";
 
 const ingestionPayloadSchema = z.object({
   handbookId: z.string().trim().min(1),
   courseId: z.string().trim().min(1),
-  fileUrl: z.url(),
 });
+
+export const runtime = "nodejs";
+export const maxDuration = 300;
 
 export async function POST(req: Request) {
   const signature = req.headers.get("Upstash-Signature");
@@ -15,36 +18,18 @@ export async function POST(req: Request) {
   }
 
   const body = await req.text();
-
-  let isValid = false;
-
-  try {
-    isValid = await receiver.verify({ signature, body });
-  } catch {
-    return new Response("Invalid signature", { status: 401 });
-  }
+  const isValid = await receiver.verify({ signature, body });
 
   if (!isValid) {
     return new Response("Invalid signature", { status: 401 });
   }
 
-  let payload: unknown;
-
-  try {
-    payload = JSON.parse(body);
-  } catch {
-    return new Response("Invalid JSON payload", { status: 400 });
-  }
-
-  const parsedPayload = ingestionPayloadSchema.safeParse(payload);
-
-  if (!parsedPayload.success) {
+  const payload: unknown = JSON.parse(body);
+  const parsed = ingestionPayloadSchema.safeParse(payload);
+  if (!parsed.success) {
     return new Response("Invalid ingestion payload", { status: 400 });
   }
 
-  // The ingestion worker is not implemented yet. Keep uploaded handbooks
-  // inactive until extraction, indexing, and verification have completed.
-  return new Response("Handbook ingestion is not implemented yet.", {
-    status: 501,
-  });
+  await processHandbook(parsed.data.handbookId, parsed.data.courseId);
+  return Response.json({ status: "processed" });
 }

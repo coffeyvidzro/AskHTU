@@ -65,7 +65,6 @@ export const ourFileRouter = {
         body: {
           handbookId: metadata.handbookId,
           courseId: metadata.courseId,
-          fileUrl: file.ufsUrl,
         },
       });
 
