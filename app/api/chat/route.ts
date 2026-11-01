@@ -10,6 +10,38 @@ const chatRequestSchema = z.object({
   message: z.string().trim().min(1).max(8_000),
 });
 
+export async function GET(req: Request) {
+  const session = await auth.api.getSession({ headers: req.headers });
+
+  if (!session) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const conversationId = new URL(req.url).searchParams.get("conversationId");
+  if (!conversationId) {
+    return Response.json({ error: "conversationId is required." }, { status: 400 });
+  }
+
+  const conversation = await prisma.conversation.findFirst({
+    where: { id: conversationId, userId: session.user.id },
+    select: {
+      id: true,
+      title: true,
+      handbook: { select: { id: true, title: true } },
+      messages: {
+        orderBy: { createdAt: "asc" },
+        select: { id: true, role: true, content: true, sources: true, createdAt: true },
+      },
+    },
+  });
+
+  if (!conversation) {
+    return Response.json({ error: "Conversation not found." }, { status: 404 });
+  }
+
+  return Response.json(conversation);
+}
+
 export async function POST(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
 
@@ -47,7 +79,7 @@ export async function POST(req: Request) {
 
   const conversation = conversationId
     ? await prisma.conversation.findFirst({
-        where: { id: conversationId, userId: session.user.id },
+        where: { id: conversationId, userId: session.user.id, handbookId },
         select: { id: true },
       })
     : null;
@@ -76,6 +108,7 @@ export async function POST(req: Request) {
       (await tx.conversation.create({
         data: {
           userId: session.user.id,
+          handbookId,
           title: message.slice(0, 80),
         },
         select: { id: true },
