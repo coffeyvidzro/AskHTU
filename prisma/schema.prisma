@@ -14,6 +14,13 @@ enum MessageRole {
   SYSTEM
 }
 
+enum HandbookIngestionStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
 model User {
   id            String         @id
   name          String
@@ -85,11 +92,11 @@ model Verification {
 
 model Course {
   id         String     @id @default(cuid())
-  code       String     @unique // e.g., "CSC 103"
-  title      String // e.g., "Probability and statistics"
-  department String // e.g., "Computer Science"
-  semester   Int // 1 or 2
-  level      Int // 100, 200, 300, 400
+  code       String     @unique
+  title      String
+  department String
+  semester   Int
+  level      Int
   handbooks  Handbook[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -98,17 +105,21 @@ model Course {
 }
 
 model Handbook {
-  id        String   @id @default(cuid())
-  title     String // e.g., "CSC 103 Lab Manual & Lecture Notes"
-  fileUrl   String? // External storage URL
-  vectorIds String[] // Upstash Vector chunk IDs
-  isActive  Boolean  @default(false)
-  courseId  String // Foreign key linking back to Course
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String                  @id @default(cuid())
+  title           String
+  fileUrl         String?
+  vectorIds       String[]
+  isActive        Boolean                 @default(false)
+  ingestionStatus HandbookIngestionStatus @default(PENDING)
+  ingestionError  String?                 @db.Text
+  processedAt     DateTime?
+  courseId        String
+  course          Course                  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
 
   @@index([courseId])
+  @@index([ingestionStatus, updatedAt])
   @@map("handbook")
 }
 
