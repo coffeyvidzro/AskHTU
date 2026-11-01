@@ -14,21 +14,24 @@ const aj = arcjet({
   rules: [shield({ mode: "LIVE" })],
 });
 
-export const authArcjet = aj
-  .withRule(
+// Authentication requests are rate-limited by IP because users are not
+// authenticated yet and therefore do not have a userId characteristic.
+export const authArcjet = arcjet({
+  key: env.ARCJET_KEY,
+  rules: [
+    shield({ mode: "LIVE" }),
     detectBot({
       mode: "LIVE",
       allow: [],
     }),
-  )
-  .withRule(
     tokenBucket({
       mode: "LIVE",
-      refillRate: 5,
+      refillRate: 10,
       interval: "15m",
-      capacity: 5,
+      capacity: 10,
     }),
-  );
+  ],
+});
 
 export const chatArcjet = aj
   .withRule(
