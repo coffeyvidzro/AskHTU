@@ -56,7 +56,8 @@ export async function indexHandbook(handbook: HandbookSource): Promise<string[]>
 
   const vectorIds: string[] = [];
 
-  for (
+  try {
+    for (
     let offset = 0;
     offset < chunks.length;
     offset += EMBEDDING_BATCH_SIZE
@@ -98,7 +99,17 @@ export async function indexHandbook(handbook: HandbookSource): Promise<string[]>
       await vector.upsert(vectorBatch);
       vectorIds.push(...vectorBatch.map((record) => record.id));
     }
-  }
+    }
 
-  return vectorIds;
+    return vectorIds;
+  } catch (error) {
+    if (vectorIds.length > 0) {
+      try {
+        await vector.delete(vectorIds);
+      } catch {
+        // Preserve the original processing error.
+      }
+    }
+    throw error;
+  }
 }
