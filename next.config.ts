@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     "@arcjet/sensitive-info-rampart",
     "@huggingface/transformers",
     "onnxruntime-node",
+    "pdfjs-dist",
   ],
 };
 
