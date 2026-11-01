@@ -40,7 +40,7 @@ AskHTU is an AI-powered study companion for Ho Technical University students. St
 
 Administrators upload PDF handbooks through UploadThing. Upload completion publishes only the handbook and course identifiers to QStash; the worker loads the canonical file URL from PostgreSQL rather than trusting a URL supplied by the job payload.
 
-The worker verifies the QStash signature, downloads the PDF from the trusted UploadThing file host, extracts selectable text page by page, creates overlapping page-scoped chunks, generates OpenAI `text-embedding-3-small` embeddings, and upserts them into Upstash Vector. Vector metadata includes the handbook ID, course ID, original PDF page number, chunk index, and text.
+The worker verifies the QStash signature, downloads the PDF from the trusted UploadThing file host, uses `pdf-parse` to extract selectable text page by page, creates overlapping page-scoped chunks, generates OpenAI `text-embedding-3-small` embeddings, and upserts them into Upstash Vector. Vector metadata includes the handbook ID, course ID, original PDF page number, chunk index, and text.
 
 Handbooks move through `PENDING`, `PROCESSING`, `READY`, or `FAILED`. A handbook becomes active only after indexing completes. Chunk IDs are deterministic per handbook/page/chunk so retried jobs overwrite the same vector records instead of creating duplicates.
 
