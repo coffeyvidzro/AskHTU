@@ -17,7 +17,7 @@ export async function retrieveHandbookContext(
 ): Promise<HandbookSource[]> {
   const embedding = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
-    input: [...history.slice(-6).map((item) => item.content), question].join("\\n"),
+    input: [...history.slice(-6).map((item) => item.content), question].join("\n"),
   });
 
   const [query] = embedding.data;
