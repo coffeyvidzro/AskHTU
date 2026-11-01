@@ -1,10 +1,8 @@
-import OpenAI from "openai";
-import { env } from "@/env";
+import { openai } from "@/lib/openai";
 import { vector } from "@/lib/upstash";
 import { chunkHandbookPages } from "./chunks";
 import { extractPdfPages } from "./pdf";
 
-const openai = new OpenAI({ apiKey: env.OPENAI_KEY });
 const EMBEDDING_MODEL = "text-embedding-3-small";
 const EMBEDDING_BATCH_SIZE = 64;
 const VECTOR_BATCH_SIZE = 100;
