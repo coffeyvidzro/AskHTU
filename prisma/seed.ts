@@ -43,7 +43,7 @@ async function main() {
 
   const departmentNames: string[] = [];
   const programmes: ProgrammeSeed[] = [];
-  const courses: CourseSeed[] = [];
+  const courses = new Map<string, CourseSeed>();
 
   for (const line of catalogue.split(/\r?\n/)) {
     if (!line || line.startsWith("#")) continue;
@@ -59,18 +59,20 @@ async function main() {
         departmentName: fields[2],
       });
     } else if (type === "C" && fields.length >= 3) {
-      courses.push({
+      const course = {
         programmeCode: fields[0],
         code: fields[1],
         title: fields.slice(2).join("|"),
-      });
+      };
+      courses.set(`${course.programmeCode}:${course.code}`, course);
     }
   }
 
+  const courseSeeds = [...courses.values()];
   if (
     departmentNames.length === 0 ||
     programmes.length === 0 ||
-    courses.length === 0
+    courseSeeds.length === 0
   ) {
     throw new Error("The academic catalogue seed file is empty or invalid.");
   }
@@ -123,7 +125,7 @@ async function main() {
       programmeRecords.map((programme) => [programme.code, programme.id]),
     );
 
-    await inBatches(courses, (course) => {
+    await inBatches(courseSeeds, (course) => {
       const programmeId = programmeIds.get(course.programmeCode);
       if (!programmeId) {
         throw new Error(
@@ -148,7 +150,7 @@ async function main() {
     });
 
     console.info(
-      `Seeded ${departmentNames.length} departments, ${programmes.length} programmes and ${courses.length} programme courses from the 2026-27 timetable.`,
+      `Seeded ${departmentNames.length} departments, ${programmes.length} programmes and ${courseSeeds.length} programme courses from the 2026-27 timetable.`,
     );
   } finally {
     await prisma.$disconnect();
