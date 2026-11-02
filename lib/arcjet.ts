@@ -8,9 +8,16 @@ import arcjet, {
 import { rampart } from "@arcjet/sensitive-info-rampart";
 import { env } from "@/env";
 
-export default arcjet({
+const aj = arcjet({
   key: env.ARCJET_KEY,
   characteristics: ["userId"],
+  rules: [shield({ mode: "LIVE" })],
+});
+
+// Authentication requests are rate-limited by IP because users are not
+// authenticated yet and therefore do not have a userId characteristic.
+export const authArcjet = arcjet({
+  key: env.ARCJET_KEY,
   rules: [
     shield({ mode: "LIVE" }),
     detectBot({
@@ -19,17 +26,48 @@ export default arcjet({
     }),
     tokenBucket({
       mode: "LIVE",
+      refillRate: 10,
+      interval: "15m",
+      capacity: 10,
+    }),
+  ],
+});
+
+export const chatArcjet = aj
+  .withRule(
+    detectBot({
+      mode: "LIVE",
+      allow: [],
+    }),
+  )
+  .withRule(
+    tokenBucket({
+      mode: "LIVE",
       refillRate: 30,
       interval: "1h",
       capacity: 30,
     }),
+  )
+  .withRule(
     sensitiveInfo({
       mode: "LIVE",
       deny: ["CREDIT_CARD_NUMBER"],
       backend: rampart(),
     }),
+  )
+  .withRule(
     detectPromptInjection({
       mode: "LIVE",
     }),
-  ],
-});
+  );
+
+export const uploadArcjet = aj.withRule(
+  tokenBucket({
+    mode: "LIVE",
+    refillRate: 10,
+    interval: "1h",
+    capacity: 10,
+  }),
+);
+
+export default aj;

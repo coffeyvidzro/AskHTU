@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth/server";
 import { generateHandbookAnswer } from "@/lib/chat/answer";
 import { retrieveHandbookContext } from "@/lib/chat/retrieve";
 import { prisma } from "@/lib/prisma";
+import aj, { chatArcjet } from "@/lib/arcjet";
 
 const chatRequestSchema = z.object({
   handbookId: z.string().trim().min(1),
@@ -15,6 +16,16 @@ export async function GET(req: Request) {
 
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
+  }
+
+  const decision = await aj.protect(req, { userId: session.user.id });
+
+  if (decision.isDenied()) {
+    return new Response("Request blocked.", { status: 403 });
+  }
+
+  if (decision.isErrored()) {
+    console.error("Arcjet chat protection failed:", decision.reason.message);
   }
 
   const searchParams = new URL(req.url).searchParams;
@@ -77,6 +88,40 @@ export async function POST(req: Request) {
   }
 
   const { handbookId, conversationId, message } = parsed.data;
+  const decision = await chatArcjet.protect(req, {
+    userId: session.user.id,
+    detectPromptInjectionMessage: message,
+    sensitiveInfoValue: message,
+  });
+
+  if (decision.isDenied()) {
+    if (decision.reason.isRateLimit()) {
+      return Response.json(
+        { error: "You've reached the chat request limit. Try again later." },
+        { status: 429 },
+      );
+    }
+
+    if (decision.reason.isPromptInjection()) {
+      return Response.json(
+        { error: "Your message looks like a prompt injection attempt. Please rephrase it." },
+        { status: 400 },
+      );
+    }
+
+    if (decision.reason.isSensitiveInfo()) {
+      return Response.json(
+        { error: "Please remove credit card information before sending your message." },
+        { status: 400 },
+      );
+    }
+
+    return Response.json({ error: "Request blocked." }, { status: 403 });
+  }
+
+  if (decision.isErrored()) {
+    console.error("Arcjet chat protection failed:", decision.reason.message);
+  }
 
   const handbook = await prisma.handbook.findFirst({
     where: {
