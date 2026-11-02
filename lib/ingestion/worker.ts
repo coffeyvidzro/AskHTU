@@ -49,14 +49,33 @@ export async function processHandbook(handbookId: string, courseId: string) {
 
   const handbook = await prisma.handbook.findUnique({
     where: { id: handbookId },
-    select: { id: true, courseId: true, fileUrl: true, vectorIds: true },
+    select: {
+      id: true,
+      courseId: true,
+      fileUrl: true,
+      vectorIds: true,
+      course: {
+        select: {
+          programmeId: true,
+          programme: {
+            select: { departmentId: true },
+          },
+        },
+      },
+    },
   });
 
   if (!handbook || handbook.courseId !== courseId) {
     throw new Error("The handbook or its course could not be found.");
   }
 
-  const indexedIds = await indexHandbook(handbook);
+  const indexedIds = await indexHandbook({
+    id: handbook.id,
+    courseId: handbook.courseId,
+    programmeId: handbook.course.programmeId,
+    departmentId: handbook.course.programme.departmentId,
+    fileUrl: handbook.fileUrl,
+  });
   const obsoleteIds = handbook.vectorIds.filter(
     (id) => !indexedIds.includes(id),
   );
