@@ -30,11 +30,14 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   role          String?        @default("STUDENT")
+  programmeId   String?
+  programme     Programme?     @relation(fields: [programmeId], references: [id], onDelete: SetNull)
   sessions      Session[]
   accounts      Account[]
   conversations Conversation[]
 
   @@unique([email])
+  @@index([programmeId])
   @@map("user")
 }
 
@@ -102,6 +105,7 @@ model Programme {
   name         String
   departmentId String
   department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  users        User[]
   courses      Course[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
