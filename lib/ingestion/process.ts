@@ -11,6 +11,8 @@ const MAX_PDF_BYTES = 16 * 1024 * 1024;
 export type HandbookSource = {
   id: string;
   courseId: string;
+  programmeId: string;
+  departmentId: string;
   fileUrl: string | null;
 };
 
@@ -113,6 +115,8 @@ export async function indexHandbook(handbook: HandbookSource): Promise<string[]>
         vector: embedding.embedding,
         metadata: {
           handbookId: handbook.id,
+          departmentId: handbook.departmentId,
+          programmeId: handbook.programmeId,
           courseId: handbook.courseId,
           pageNumber: chunk.pageNumber,
           chunkIndex: chunk.chunkIndex,
