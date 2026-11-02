@@ -1,0 +1,312 @@
+[
+  {
+    "code": "AF",
+    "name": "Advance Fashion",
+    "departmentName": "Fashion Design and Textilles"
+  },
+  {
+    "code": "BCMT",
+    "name": "BA Communication and Applied Media Technology",
+    "departmentName": "Modern Languages and Communication"
+  },
+  {
+    "code": "BSC ACTX",
+    "name": "BSc Accounting (Taxation or Finance)",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "BSC ARCT",
+    "name": "BSc. Architectural Technology",
+    "departmentName": "Architectural and Real Estate Management"
+  },
+  {
+    "code": "BSC EI",
+    "name": "BSc Economics and Innovation",
+    "departmentName": "Multi-Disciplinary Studies"
+  },
+  {
+    "code": "BSC ES",
+    "name": "BSc Environmental Science",
+    "departmentName": "Environmental Science"
+  },
+  {
+    "code": "BSC FS",
+    "name": "BSc Financial Services (Banking and Finance/Finance and Insurance)",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "BSC MIT",
+    "name": "BSc Marketing with Information Technology",
+    "departmentName": "Marketing"
+  },
+  {
+    "code": "BSC PSCM",
+    "name": "BSc Procurement and Supply Chain Management",
+    "departmentName": "Logistics and Supply Chain Management"
+  },
+  {
+    "code": "BSC SF",
+    "name": "BSc Statistics and Finance",
+    "departmentName": "Statistics and Mathematics"
+  },
+  {
+    "code": "BSMS",
+    "name": "Bachelor Secretaryship and Management Studies",
+    "departmentName": "Management Science"
+  },
+  {
+    "code": "BTECH AEENG",
+    "name": "BTech Agricultural and Environmental Enginering",
+    "departmentName": "Agricultural Engineering"
+  },
+  {
+    "code": "BTECH AGED",
+    "name": "BTech Agro Enterprise Development",
+    "departmentName": "Agricultural Sciences and Technology"
+  },
+  {
+    "code": "BTECH AUTENG",
+    "name": "BTech Automobile Engineering",
+    "departmentName": "Mechanical Engineering"
+  },
+  {
+    "code": "BTECH BMENG",
+    "name": "BTech Biomedical Engineering",
+    "departmentName": "Electricals and Electronic Engineering"
+  },
+  {
+    "code": "BTECH BT",
+    "name": "HND Building Technology",
+    "departmentName": "Building Technology"
+  },
+  {
+    "code": "BTECH CENG",
+    "name": "BTech Civil Engineering",
+    "departmentName": "Civil Engineering"
+  },
+  {
+    "code": "BTECH CSC",
+    "name": "BTech Computer Science",
+    "departmentName": "Computer Science"
+  },
+  {
+    "code": "BTECH DMENG",
+    "name": "BTech Design and Manufacturing Engineering",
+    "departmentName": "Mechanical Engineering"
+  },
+  {
+    "code": "BTECH EEENG",
+    "name": "BTech Electrical and Electronic Engineering",
+    "departmentName": "Electricals and Electronic Engineering"
+  },
+  {
+    "code": "BTECH FDT",
+    "name": "BTech Fashion Design and Textiles",
+    "departmentName": "Fashion Design and Textilles"
+  },
+  {
+    "code": "BTECH FM",
+    "name": "BTech Facilities Management",
+    "departmentName": "Architectural and Real Estate Management"
+  },
+  {
+    "code": "BTECH FTECH",
+    "name": "BTech Food Technology",
+    "departmentName": "Food Technology"
+  },
+  {
+    "code": "BTECH HM",
+    "name": "BTech Hospitality Management",
+    "departmentName": "Hospitality Tourism and Institutional Management"
+  },
+  {
+    "code": "BTECH ICT",
+    "name": "BTech Information and Communication Technology",
+    "departmentName": "Computer Science"
+  },
+  {
+    "code": "BTECH IDA",
+    "name": "BTech Industrial Art",
+    "departmentName": "Industrial Arts"
+  },
+  {
+    "code": "BTECH TLEM",
+    "name": "BTech Tourism, Leisure and Event Management",
+    "departmentName": "Hospitality Tourism and Institutional Management"
+  },
+  {
+    "code": "CBW",
+    "name": "Certificate in Beauty and Wellness",
+    "departmentName": "Fashion Design and Textilles"
+  },
+  {
+    "code": "CERT",
+    "name": "Certificate, Hospitality and Catering Management",
+    "departmentName": "Hospitality Tourism and Institutional Management"
+  },
+  {
+    "code": "DBS",
+    "name": "Diploma in Business",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "DBS ACT",
+    "name": "Diploma in Accounting",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "DBS MKT",
+    "name": "Diploma in Maketing",
+    "departmentName": "Marketing"
+  },
+  {
+    "code": "DBS SMS",
+    "name": "Diploma in Secretaryship",
+    "departmentName": "Management Science"
+  },
+  {
+    "code": "DBT",
+    "name": "Diploma in Building Technology",
+    "departmentName": "Building Technology"
+  },
+  {
+    "code": "DBW",
+    "name": "Diploma in Beauty and Wellness",
+    "departmentName": "Fashion Design and Textilles"
+  },
+  {
+    "code": "DHM",
+    "name": "Diploma in Hospitality Management",
+    "departmentName": "Hospitality Tourism and Institutional Management"
+  },
+  {
+    "code": "DIP ACT",
+    "name": "Dip. Accounting",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "DIP BF",
+    "name": "Dip. Banking and Finance",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "DIP MIT",
+    "name": "Dip. Marketing",
+    "departmentName": "Marketing"
+  },
+  {
+    "code": "DIP PSCM",
+    "name": "Dip. Procurement and Supply Chain Management",
+    "departmentName": "Logistics and Supply Chain Management"
+  },
+  {
+    "code": "DIP SMS",
+    "name": "Dip. Secretaryship and Management Studies",
+    "departmentName": "Management Science"
+  },
+  {
+    "code": "DSF",
+    "name": "Diploma in Statistics and Finance",
+    "departmentName": "Statistics and Mathematics"
+  },
+  {
+    "code": "DWPF",
+    "name": "Diploma in Welding and Pipe Fitting Engineering",
+    "departmentName": "Mechanical Engineering"
+  },
+  {
+    "code": "HND ACT",
+    "name": "Accountancy",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "HND AENG",
+    "name": "HND Agricultural Enginering",
+    "departmentName": "Agricultural Engineering"
+  },
+  {
+    "code": "HND AGED",
+    "name": "HND Agro Enterprise Development",
+    "departmentName": "Agricultural Sciences and Technology"
+  },
+  {
+    "code": "HND AUTENG",
+    "name": "HND Mechanical Engineering",
+    "departmentName": "Mechanical Engineering"
+  },
+  {
+    "code": "HND BAF",
+    "name": "Banking and Finance",
+    "departmentName": "Accounting and Finance"
+  },
+  {
+    "code": "HND BT",
+    "name": "HND Building Technology",
+    "departmentName": "Building Technology"
+  },
+  {
+    "code": "HND CENG",
+    "name": "HND Civil Engineering",
+    "departmentName": "Civil Engineering"
+  },
+  {
+    "code": "HND CSC",
+    "name": "HND Computer Science",
+    "departmentName": "Computer Science"
+  },
+  {
+    "code": "HND EEENG",
+    "name": "HND Electrical and Electronic Engineering",
+    "departmentName": "Electricals and Electronic Engineering"
+  },
+  {
+    "code": "HND FDT",
+    "name": "HND Fashion Design and Textiles",
+    "departmentName": "Fashion Design and Textilles"
+  },
+  {
+    "code": "HND FTECH",
+    "name": "HND Food Technology",
+    "departmentName": "Food Technology"
+  },
+  {
+    "code": "HND HCIM",
+    "name": "HND Hospitality Tourism and Institutional Management",
+    "departmentName": "Hospitality Tourism and Institutional Management"
+  },
+  {
+    "code": "HND IA",
+    "name": "HND Industrial Art",
+    "departmentName": "Industrial Arts"
+  },
+  {
+    "code": "HND ICT",
+    "name": "HND Information and Communication Technology",
+    "departmentName": "Computer Science"
+  },
+  {
+    "code": "HND MKT",
+    "name": "HND Marketing",
+    "departmentName": "Marketing"
+  },
+  {
+    "code": "HND PRODENG",
+    "name": "HND Mechanical Engineering",
+    "departmentName": "Mechanical Engineering"
+  },
+  {
+    "code": "HND PRODENG/AUTENG",
+    "name": "HND Mechanical Engineering",
+    "departmentName": "Mechanical Engineering"
+  },
+  {
+    "code": "HND PS",
+    "name": "HND Purchasing and Supply",
+    "departmentName": "Logistics and Supply Chain Management"
+  },
+  {
+    "code": "HND SMS",
+    "name": "HND Secretaryship and Management Studies",
+    "departmentName": "Management Science"
+  }
+]
