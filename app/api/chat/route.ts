@@ -123,18 +123,36 @@ export async function POST(req: Request) {
     console.error("Arcjet chat protection failed:", decision.reason.message);
   }
 
+  const isAdmin = session.user.role === "ADMIN";
+  const user = isAdmin
+    ? null
+    : await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { programmeId: true },
+      });
+
+  if (!isAdmin && !user?.programmeId) {
+    return Response.json(
+      { error: "Complete your academic profile before chatting with a handbook." },
+      { status: 409 },
+    );
+  }
+
   const handbook = await prisma.handbook.findFirst({
     where: {
       id: handbookId,
       isActive: true,
       ingestionStatus: "READY",
+      ...(user?.programmeId
+        ? { course: { programmeId: user.programmeId } }
+        : {}),
     },
     select: { id: true },
   });
 
   if (!handbook) {
     return Response.json(
-      { error: "This handbook is not available for chat yet." },
+      { error: "This handbook is not available for your selected programme." },
       { status: 404 },
     );
   }
