@@ -6069,16 +6069,6 @@ const courses: CourseSeed[] = [
   }
 ];
 
-async function inBatches<T>(
-  items: T[],
-  worker: (item: T) => Promise<unknown>,
-  batchSize = 25,
-) {
-  for (let offset = 0; offset < items.length; offset += batchSize) {
-    await Promise.all(items.slice(offset, offset + batchSize).map(worker));
-  }
-}
-
 async function main() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
@@ -6110,13 +6100,10 @@ async function main() {
   const prisma = new PrismaClient({ adapter: new PrismaPg(pool) });
 
   try {
-    await inBatches(departments, (name) =>
-      prisma.department.upsert({
-        where: { name },
-        update: {},
-        create: { name },
-      }),
-    );
+    await prisma.department.createMany({
+      data: departments.map((name) => ({ name })),
+      skipDuplicates: true,
+    });
 
     const departmentRecords = await prisma.department.findMany({
       where: { name: { in: departments } },
@@ -6126,24 +6113,20 @@ async function main() {
       departmentRecords.map(({ id, name }) => [name, id]),
     );
 
-    await inBatches(programmes, (programme) => {
-      const departmentId = departmentIds.get(programme.departmentName);
-      if (!departmentId) {
-        throw new Error(`Department "${programme.departmentName}" was not created.`);
-      }
+    await prisma.programme.createMany({
+      data: programmes.map((programme) => {
+        const departmentId = departmentIds.get(programme.departmentName);
+        if (!departmentId) {
+          throw new Error(`Department "${programme.departmentName}" was not created.`);
+        }
 
-      return prisma.programme.upsert({
-        where: { code: programme.code },
-        update: {
-          name: programme.name,
-          departmentId,
-        },
-        create: {
+        return {
           code: programme.code,
           name: programme.name,
           departmentId,
-        },
-      });
+        };
+      }),
+      skipDuplicates: true,
     });
 
     const programmeRecords = await prisma.programme.findMany({
@@ -6154,29 +6137,25 @@ async function main() {
       programmeRecords.map(({ id, code }) => [code, id]),
     );
 
-    await inBatches(courses, (course) => {
-      const programmeId = programmeIds.get(course.programmeCode);
-      if (!programmeId) {
-        throw new Error(`Programme "${course.programmeCode}" was not created.`);
-      }
+    await prisma.course.createMany({
+      data: courses.map((course) => {
+        const programmeId = programmeIds.get(course.programmeCode);
+        if (!programmeId) {
+          throw new Error(`Programme "${course.programmeCode}" was not created.`);
+        }
 
-      return prisma.course.upsert({
-        where: {
-          programmeId_code: {
-            programmeId,
-            code: course.code,
-          },
-        },
-        update: { title: course.title },
-        create: {
+        return {
           programmeId,
           code: course.code,
           title: course.title,
-        },
-      });
+        };
+      }),
+      skipDuplicates: true,
     });
 
-    console.info(`Seeded ${departments.length} departments, ${programmes.length} programmes and ${courses.length} programme courses from the 2026-27 timetable.`);
+    console.info(
+      `Seeded academic catalogue: ${departments.length} departments, ${programmes.length} programmes and ${courses.length} programme courses.`,
+    );
   } finally {
     await prisma.$disconnect();
     await pool.end();
