@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "postinstall": "prisma generate",
-    "db:push": "prisma db push"
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed"
   },
   "dependencies": {
     "@arcjet/next": "^1.14.1",
