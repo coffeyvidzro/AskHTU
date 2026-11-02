@@ -1,13 +1,43 @@
 [
   {
     "programmeCode": "AF",
+    "code": "NTF 101",
+    "title": "Pattern Drafting I"
+  },
+  {
+    "programmeCode": "AF",
     "code": "NTF 103",
     "title": "Garment Construction Theory I"
   },
   {
     "programmeCode": "AF",
+    "code": "NTF 105",
+    "title": "Garment Construction I"
+  },
+  {
+    "programmeCode": "AF",
     "code": "NTF 107",
     "title": "Business Affairs I"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 111",
+    "title": "Textiles I"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 113",
+    "title": "Tailored Pattern Drafting I"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 115",
+    "title": "Tailored Garment I"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 117",
+    "title": "Introduction to Sewing Technology"
   },
   {
     "programmeCode": "AF",
@@ -21,13 +51,43 @@
   },
   {
     "programmeCode": "AF",
+    "code": "NTF 201",
+    "title": "Pattern Drafting II"
+  },
+  {
+    "programmeCode": "AF",
     "code": "NTF 203",
+    "title": "Garment Construction II"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 205",
     "title": "Garment Construction II"
   },
   {
     "programmeCode": "AF",
     "code": "NTF 207",
     "title": "Business Affairs II"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 211",
+    "title": "Textiles II"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 213",
+    "title": "Tailored Pattern"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 215",
+    "title": "Tailored Garment"
+  },
+  {
+    "programmeCode": "AF",
+    "code": "NTF 219",
+    "title": "Illustration I"
   },
   {
     "programmeCode": "AF",
@@ -1826,6 +1886,11 @@
   },
   {
     "programmeCode": "BTECH BMENG",
+    "code": "BBME 201",
+    "title": "Circuit Theory"
+  },
+  {
+    "programmeCode": "BTECH BMENG",
     "code": "BBME 203",
     "title": "Thermodynamics"
   },
@@ -1838,6 +1903,11 @@
     "programmeCode": "BTECH BMENG",
     "code": "BBME 207",
     "title": "Digital Systems"
+  },
+  {
+    "programmeCode": "BTECH BMENG",
+    "code": "BBME 209",
+    "title": "Electronics Circuit"
   },
   {
     "programmeCode": "BTECH BMENG",
@@ -1873,6 +1943,11 @@
     "programmeCode": "BTECH BMENG",
     "code": "BBME 401",
     "title": "Tissue Engineering"
+  },
+  {
+    "programmeCode": "BTECH BMENG",
+    "code": "BBME 403",
+    "title": "Physiological Modelling"
   },
   {
     "programmeCode": "BTECH BMENG",
@@ -2776,6 +2851,16 @@
   },
   {
     "programmeCode": "BTECH FDT",
+    "code": "BFDT 103",
+    "title": "Flat Pattern Making-Children"
+  },
+  {
+    "programmeCode": "BTECH FDT",
+    "code": "BFDT 105",
+    "title": "Construction of Children Dresses"
+  },
+  {
+    "programmeCode": "BTECH FDT",
     "code": "BFDT 107",
     "title": "Fashion Illustration"
   },
@@ -2788,6 +2873,31 @@
     "programmeCode": "BTECH FDT",
     "code": "BFDT 201",
     "title": "Fashion Media Development"
+  },
+  {
+    "programmeCode": "BTECH FDT",
+    "code": "BFDT 203",
+    "title": "Skirts and Dress Patterns"
+  },
+  {
+    "programmeCode": "BTECH FDT",
+    "code": "BFDT 205",
+    "title": "Production of Skirts and Dresses"
+  },
+  {
+    "programmeCode": "BTECH FDT",
+    "code": "BFDT 207",
+    "title": "Tailored Trouser Patterns"
+  },
+  {
+    "programmeCode": "BTECH FDT",
+    "code": "BFDT 209",
+    "title": "Tailored Trouser Production"
+  },
+  {
+    "programmeCode": "BTECH FDT",
+    "code": "BFDT 211",
+    "title": "Fashion Figure Composition"
   },
   {
     "programmeCode": "BTECH FDT",
@@ -2808,6 +2918,11 @@
     "programmeCode": "BTECH FDT",
     "code": "BFDT 405",
     "title": "Millinery/Accessories Design and Production I"
+  },
+  {
+    "programmeCode": "BTECH FDT",
+    "code": "BFDT 407",
+    "title": "Design Brief and Collection I"
   },
   {
     "programmeCode": "BTECH FDT",
@@ -3216,6 +3331,11 @@
   },
   {
     "programmeCode": "BTECH ICT",
+    "code": "BICT 101",
+    "title": "Fundamentals of Programming"
+  },
+  {
+    "programmeCode": "BTECH ICT",
     "code": "BICT 103",
     "title": "Discrete Mathematics"
   },
@@ -3231,13 +3351,53 @@
   },
   {
     "programmeCode": "BTECH ICT",
+    "code": "BICT 203",
+    "title": "Database Management Systems"
+  },
+  {
+    "programmeCode": "BTECH ICT",
     "code": "BICT 205",
     "title": "Data Structures andAlgorithms"
   },
   {
     "programmeCode": "BTECH ICT",
+    "code": "BICT 207",
+    "title": "Object Oriented Programming Using Java"
+  },
+  {
+    "programmeCode": "BTECH ICT",
+    "code": "BICT 209",
+    "title": "Web Technology I"
+  },
+  {
+    "programmeCode": "BTECH ICT",
     "code": "BICT 211",
     "title": "Probability and Statistics"
+  },
+  {
+    "programmeCode": "BTECH ICT",
+    "code": "BICT 213",
+    "title": "Software Engineering"
+  },
+  {
+    "programmeCode": "BTECH ICT",
+    "code": "BICT 301",
+    "title": "Programming with Python"
+  },
+  {
+    "programmeCode": "BTECH ICT",
+    "code": "BICT 303",
+    "title": "Software Engineering"
+  },
+  {
+    "programmeCode": "BTECH ICT",
+    "code": "BICT 305",
+    "title": "Server Administration I"
+  },
+  {
+    "programmeCode": "BTECH ICT",
+    "code": "BICT 307",
+    "title": "Multimedia Technology"
   },
   {
     "programmeCode": "BTECH ICT",
@@ -3525,6 +3685,16 @@
     "title": "English Language"
   },
   {
+    "programmeCode": "DBS",
+    "code": "DAC 105",
+    "title": "Economics"
+  },
+  {
+    "programmeCode": "DBS",
+    "code": "DAC 107",
+    "title": "Business Law"
+  },
+  {
     "programmeCode": "DBS ACT",
     "code": "DAC 101",
     "title": "Business Economics"
@@ -3535,9 +3705,64 @@
     "title": "Business Communication"
   },
   {
+    "programmeCode": "DBS ACT",
+    "code": "DAC 105",
+    "title": "Economics"
+  },
+  {
+    "programmeCode": "DBS ACT",
+    "code": "DAC 107",
+    "title": "Business Law"
+  },
+  {
+    "programmeCode": "DBS ACT",
+    "code": "DAC 109",
+    "title": "Office Practice"
+  },
+  {
+    "programmeCode": "DBS MKT",
+    "code": "DAC 105",
+    "title": "Economics"
+  },
+  {
+    "programmeCode": "DBS MKT",
+    "code": "DAC 107",
+    "title": "Business Law"
+  },
+  {
     "programmeCode": "DBS MKT",
     "code": "HOTU 101",
     "title": "Communication Skills I"
+  },
+  {
+    "programmeCode": "DBS SMS",
+    "code": "DAC 105",
+    "title": "Economics"
+  },
+  {
+    "programmeCode": "DBS SMS",
+    "code": "DAC 107",
+    "title": "Business Law"
+  },
+  {
+    "programmeCode": "DBS SMS",
+    "code": "DSM 101",
+    "title": "Business Communication"
+  },
+  {
+    "programmeCode": "DBS SMS",
+    "code": "DSM 103",
+    "title": "Typewriting"
+  },
+  {
+    "programmeCode": "DBS SMS",
+    "code": "DSM 107",
+    "title": "Business Law"
+  },
+  {
+    "programmeCode": "DBS SMS",
+    "code": "DSM 109",
+    "title": "Office Practice and Administration"
   },
   {
     "programmeCode": "DBT",
@@ -4048,6 +4273,11 @@
     "programmeCode": "DSF",
     "code": "HOTU 105",
     "title": "Basic French 1"
+  },
+  {
+    "programmeCode": "DWPF",
+    "code": "DWP 111",
+    "title": "Fundamental Mathematics for Welders and Pipe Fitters"
   },
   {
     "programmeCode": "DWPF",
@@ -4831,6 +5061,11 @@
   },
   {
     "programmeCode": "HND EEENG",
+    "code": "COS 110",
+    "title": "Communication Skills I"
+  },
+  {
+    "programmeCode": "HND EEENG",
     "code": "EEE 101",
     "title": "Basic Electronics"
   },
@@ -5291,6 +5526,16 @@
   },
   {
     "programmeCode": "HND ICT",
+    "code": "COS 110",
+    "title": "Communication Skills I"
+  },
+  {
+    "programmeCode": "HND ICT",
+    "code": "ETP 310",
+    "title": "Entrepreneurship I"
+  },
+  {
+    "programmeCode": "HND ICT",
     "code": "ICT 101",
     "title": "Elements of Programming"
   },
@@ -5353,6 +5598,16 @@
     "programmeCode": "HND ICT",
     "code": "ICT 303",
     "title": "Introduction to Management"
+  },
+  {
+    "programmeCode": "HND ICT",
+    "code": "ICT 305",
+    "title": "Systems Administration"
+  },
+  {
+    "programmeCode": "HND ICT",
+    "code": "ICT 307",
+    "title": "Artificial Intelligence"
   },
   {
     "programmeCode": "HND MKT",
