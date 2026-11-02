@@ -30,10 +30,6 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   role          String?        @default("STUDENT")
-  studentId     String?        @unique
-  department    String?
-  programme     String?
-  yearOfStudy   Int?
   sessions      Session[]
   accounts      Account[]
   conversations Conversation[]
@@ -90,17 +86,42 @@ model Verification {
   @@map("verification")
 }
 
-model Course {
-  id         String     @id @default(cuid())
-  code       String     @unique
-  title      String
-  department String
-  semester   Int
-  level      Int
-  handbooks  Handbook[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+model Department {
+  id         String      @id @default(cuid())
+  name       String      @unique
+  programmes Programme[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
+  @@map("department")
+}
+
+model Programme {
+  id           String     @id @default(cuid())
+  code         String     @unique
+  name         String
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  courses      Course[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([departmentId])
+  @@map("programme")
+}
+
+model Course {
+  id          String     @id @default(cuid())
+  code        String
+  title       String
+  programmeId String
+  programme   Programme  @relation(fields: [programmeId], references: [id], onDelete: Restrict)
+  handbooks   Handbook[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([programmeId, code])
+  @@index([programmeId])
   @@map("course")
 }
 
@@ -114,7 +135,7 @@ model Handbook {
   ingestionError  String?                 @db.Text
   processedAt     DateTime?
   courseId        String
-  course          Course                  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course          Course                  @relation(fields: [courseId], references: [id], onDelete: Restrict)
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
 
@@ -126,15 +147,15 @@ model Handbook {
 }
 
 model Conversation {
-  id        String    @id @default(cuid())
-  title     String    @default("New Conversation")
+  id         String    @id @default(cuid())
+  title      String    @default("New Conversation")
   userId     String
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   handbookId String?
   handbook   Handbook? @relation(fields: [handbookId], references: [id], onDelete: SetNull)
   messages   Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([userId])
   @@index([handbookId, updatedAt])
