@@ -69,13 +69,32 @@ export async function processHandbook(handbookId: string, courseId: string) {
     throw new Error("The handbook or its course could not be found.");
   }
 
-  const indexedIds = await indexHandbook({
-    id: handbook.id,
-    courseId: handbook.courseId,
-    programmeId: handbook.course.programmeId,
-    departmentId: handbook.course.programme.departmentId,
-    fileUrl: handbook.fileUrl,
-  });
+  let indexedIds: string[];
+  try {
+    indexedIds = await indexHandbook({
+      id: handbook.id,
+      courseId: handbook.courseId,
+      programmeId: handbook.course.programmeId,
+      departmentId: handbook.course.programme.departmentId,
+      fileUrl: handbook.fileUrl,
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Handbook processing failed.";
+    await prisma.handbook.updateMany({
+      where: {
+        id: handbookId,
+        courseId,
+        ingestionStatus: "PROCESSING",
+      },
+      data: {
+        ingestionStatus: "FAILED",
+        ingestionError: message.slice(0, 4_000),
+        isActive: false,
+      },
+    });
+    throw error;
+  }
   const obsoleteIds = handbook.vectorIds.filter(
     (id) => !indexedIds.includes(id),
   );
