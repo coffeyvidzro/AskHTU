@@ -17,7 +17,9 @@ export async function retrieveHandbookContext(
 ): Promise<HandbookSource[]> {
   const embedding = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
-    input: [...history.slice(-6).map((item) => item.content), question].join("\n"),
+    input: [...history.slice(-6).map((item) => item.content), question].join(
+      "\n",
+    ),
   });
 
   const [query] = embedding.data;
@@ -33,7 +35,9 @@ export async function retrieveHandbookContext(
   });
 
   return matches
-    .filter((match) => match.metadata && typeof match.metadata.text === "string")
+    .filter(
+      (match) => match.metadata && typeof match.metadata.text === "string",
+    )
     .map((match) => ({
       pageNumber: Number(match.metadata?.pageNumber),
       text: String(match.metadata?.text),

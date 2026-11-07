@@ -55,6 +55,6 @@ export async function GET(req: Request) {
 
   return Response.json({
     items,
-    nextCursor: hasMore ? items.at(-1)?.id ?? null : null,
+    nextCursor: hasMore ? (items.at(-1)?.id ?? null) : null,
   });
 }

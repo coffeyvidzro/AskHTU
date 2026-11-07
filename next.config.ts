@@ -12,11 +12,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  serverExternalPackages: [
-    "@arcjet/sensitive-info-rampart",
-    "@huggingface/transformers",
-    "onnxruntime-node",
-  ],
+  serverExternalPackages: ["@huggingface/transformers", "onnxruntime-node"],
 };
 
 export default nextConfig;

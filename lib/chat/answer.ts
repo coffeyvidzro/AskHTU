@@ -42,6 +42,8 @@ export async function generateHandbookAnswer(
     ],
   });
 
-  return response.choices[0]?.message.content?.trim() ||
-    "I couldn't generate an answer from the selected handbook.";
+  return (
+    response.choices[0]?.message.content?.trim() ||
+    "I couldn't generate an answer from the selected handbook."
+  );
 }

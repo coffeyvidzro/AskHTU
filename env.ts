@@ -8,7 +8,6 @@ export const env = createEnv({
     BETTER_AUTH_URL: z.url(),
 
     OPENAI_KEY: z.string().min(1),
-    ARCJET_KEY: z.string().min(1),
     RESEND_KEY: z.string().min(1),
 
     UPSTASH_REDIS_URL: z.url(),

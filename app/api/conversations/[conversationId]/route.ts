@@ -28,7 +28,10 @@ export async function GET(req: Request, context: RouteContext) {
 
   const params = paramsSchema.safeParse(await context.params);
   if (!params.success) {
-    return Response.json({ error: "Invalid conversation ID." }, { status: 400 });
+    return Response.json(
+      { error: "Invalid conversation ID." },
+      { status: 400 },
+    );
   }
 
   const query = querySchema.safeParse(
@@ -80,7 +83,7 @@ export async function GET(req: Request, context: RouteContext) {
   return Response.json({
     conversation,
     messages: items,
-    nextMessageCursor: hasMore ? messages[limit - 1]?.id ?? null : null,
+    nextMessageCursor: hasMore ? (messages[limit - 1]?.id ?? null) : null,
   });
 }
 
@@ -93,7 +96,10 @@ export async function PATCH(req: Request, context: RouteContext) {
 
   const params = paramsSchema.safeParse(await context.params);
   if (!params.success) {
-    return Response.json({ error: "Invalid conversation ID." }, { status: 400 });
+    return Response.json(
+      { error: "Invalid conversation ID." },
+      { status: 400 },
+    );
   }
 
   const payload: unknown = await req.json();
@@ -135,7 +141,10 @@ export async function DELETE(req: Request, context: RouteContext) {
 
   const params = paramsSchema.safeParse(await context.params);
   if (!params.success) {
-    return Response.json({ error: "Invalid conversation ID." }, { status: 400 });
+    return Response.json(
+      { error: "Invalid conversation ID." },
+      { status: 400 },
+    );
   }
 
   const deleted = await prisma.conversation.deleteMany({

@@ -57,7 +57,9 @@ async function readPdfResponse(response: Response): Promise<ArrayBuffer> {
   return buffer.buffer;
 }
 
-export async function indexHandbook(handbook: HandbookSource): Promise<string[]> {
+export async function indexHandbook(
+  handbook: HandbookSource,
+): Promise<string[]> {
   if (!handbook.fileUrl) {
     throw new Error("The handbook does not have an uploaded PDF.");
   }
@@ -75,7 +77,9 @@ export async function indexHandbook(handbook: HandbookSource): Promise<string[]>
   });
 
   if (!response.ok) {
-    throw new Error(`Unable to download handbook PDF (HTTP ${response.status}).`);
+    throw new Error(
+      `Unable to download handbook PDF (HTTP ${response.status}).`,
+    );
   }
 
   const buffer = await readPdfResponse(response);
@@ -93,11 +97,7 @@ export async function indexHandbook(handbook: HandbookSource): Promise<string[]>
 
   const vectorIds: string[] = [];
 
-  for (
-    let offset = 0;
-    offset < chunks.length;
-    offset += EMBEDDING_BATCH_SIZE
-  ) {
+  for (let offset = 0; offset < chunks.length; offset += EMBEDDING_BATCH_SIZE) {
     const batch = chunks.slice(offset, offset + EMBEDDING_BATCH_SIZE);
     const embeddings = await openai.embeddings.create({
       model: EMBEDDING_MODEL,

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { readFile } from "node:fs/promises";
-import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import { PrismaClient } from "./generated/client";
 
 type ProgrammeSeed = {
@@ -37,27 +37,37 @@ function validateCatalogue(
 ) {
   const departmentNames = new Set(departments);
   const programmeCodes = new Set(programmes.map(({ code }) => code));
-  const courseKeys = new Set(courses.map(({ programmeCode, code }) => `${programmeCode}:${code}`));
+  const courseKeys = new Set(
+    courses.map(({ programmeCode, code }) => `${programmeCode}:${code}`),
+  );
 
   if (departmentNames.size !== departments.length) {
     throw new Error("The academic catalogue contains duplicate departments.");
   }
   if (programmeCodes.size !== programmes.length) {
-    throw new Error("The academic catalogue contains duplicate programme codes.");
+    throw new Error(
+      "The academic catalogue contains duplicate programme codes.",
+    );
   }
   if (courseKeys.size !== courses.length) {
-    throw new Error("The academic catalogue contains duplicate course assignments.");
+    throw new Error(
+      "The academic catalogue contains duplicate course assignments.",
+    );
   }
 
   for (const programme of programmes) {
     if (!departmentNames.has(programme.departmentName)) {
-      throw new Error(`Unknown department "${programme.departmentName}" for programme "${programme.code}".`);
+      throw new Error(
+        `Unknown department "${programme.departmentName}" for programme "${programme.code}".`,
+      );
     }
   }
 
   for (const course of courses) {
     if (!programmeCodes.has(course.programmeCode)) {
-      throw new Error(`Unknown programme "${course.programmeCode}" for course "${course.code}".`);
+      throw new Error(
+        `Unknown programme "${course.programmeCode}" for course "${course.code}".`,
+      );
     }
   }
 }
@@ -92,7 +102,9 @@ async function main() {
       data: programmes.map((programme) => {
         const departmentId = departmentIds.get(programme.departmentName);
         if (!departmentId) {
-          throw new Error(`Department "${programme.departmentName}" was not created.`);
+          throw new Error(
+            `Department "${programme.departmentName}" was not created.`,
+          );
         }
 
         return {
@@ -116,7 +128,9 @@ async function main() {
       data: courses.map((course) => {
         const programmeId = programmeIds.get(course.programmeCode);
         if (!programmeId) {
-          throw new Error(`Programme "${course.programmeCode}" was not created.`);
+          throw new Error(
+            `Programme "${course.programmeCode}" was not created.`,
+          );
         }
 
         return {

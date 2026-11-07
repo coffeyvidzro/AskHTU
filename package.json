@@ -16,8 +16,6 @@
     "db:seed": "prisma db seed"
   },
   "dependencies": {
-    "@arcjet/next": "^1.14.1",
-    "@arcjet/sensitive-info-rampart": "^1.14.1",
     "@base-ui/react": "^1.9.0",
     "@hugeicons/core-free-icons": "^4.3.5",
     "@hugeicons/react": "^1.1.10",

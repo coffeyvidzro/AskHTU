@@ -3,7 +3,6 @@ import { auth } from "@/lib/auth/server";
 import { generateHandbookAnswer } from "@/lib/chat/answer";
 import { retrieveHandbookContext } from "@/lib/chat/retrieve";
 import { prisma } from "@/lib/prisma";
-import aj, { chatArcjet } from "@/lib/arcjet";
 
 const chatRequestSchema = z.object({
   handbookId: z.string().trim().min(1),
@@ -18,25 +17,14 @@ export async function GET(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const decision = await aj.protect(req, { userId: session.user.id });
-
-  if (decision.isDenied()) {
-    return new Response("Request blocked.", { status: 403 });
-  }
-
-  if (decision.isErrored()) {
-    console.error("Arcjet chat protection failed:", decision.reason.message);
-  }
-
   const searchParams = new URL(req.url).searchParams;
   const conversationId = searchParams.get("conversationId");
+  const handbookId = searchParams.get("handbookId");
   if (!conversationId) {
     const conversations = await prisma.conversation.findMany({
       where: {
         userId: session.user.id,
-        ...(searchParams.get("handbookId")
-          ? { handbookId: searchParams.get("handbookId")! }
-          : {}),
+        ...(handbookId ? { handbookId } : {}),
       },
       orderBy: { updatedAt: "desc" },
       select: {
@@ -58,7 +46,13 @@ export async function GET(req: Request) {
       handbook: { select: { id: true, title: true } },
       messages: {
         orderBy: { createdAt: "asc" },
-        select: { id: true, role: true, content: true, sources: true, createdAt: true },
+        select: {
+          id: true,
+          role: true,
+          content: true,
+          sources: true,
+          createdAt: true,
+        },
       },
     },
   });
@@ -88,40 +82,6 @@ export async function POST(req: Request) {
   }
 
   const { handbookId, conversationId, message } = parsed.data;
-  const decision = await chatArcjet.protect(req, {
-    userId: session.user.id,
-    detectPromptInjectionMessage: message,
-    sensitiveInfoValue: message,
-  });
-
-  if (decision.isDenied()) {
-    if (decision.reason.isRateLimit()) {
-      return Response.json(
-        { error: "You've reached the chat request limit. Try again later." },
-        { status: 429 },
-      );
-    }
-
-    if (decision.reason.isPromptInjection()) {
-      return Response.json(
-        { error: "Your message looks like a prompt injection attempt. Please rephrase it." },
-        { status: 400 },
-      );
-    }
-
-    if (decision.reason.isSensitiveInfo()) {
-      return Response.json(
-        { error: "Please remove credit card information before sending your message." },
-        { status: 400 },
-      );
-    }
-
-    return Response.json({ error: "Request blocked." }, { status: 403 });
-  }
-
-  if (decision.isErrored()) {
-    console.error("Arcjet chat protection failed:", decision.reason.message);
-  }
 
   const isAdmin = session.user.role === "ADMIN";
   const user = isAdmin
@@ -133,7 +93,10 @@ export async function POST(req: Request) {
 
   if (!isAdmin && !user?.programmeId) {
     return Response.json(
-      { error: "Complete your academic profile before chatting with a handbook." },
+      {
+        error:
+          "Complete your academic profile before chatting with a handbook.",
+      },
       { status: 409 },
     );
   }
